@@ -1,18 +1,28 @@
 #!/bin/bash
 arr=(
-  '-A128m -n4m' 
-  '-qg'
+#   '-A128m -H128M -n4m'
+#   '-A128m -H128M -n8m'
+#   '-A128m -H128m -n8m'
+  '-A128m -H128m -n8m'
+  '-A128m -n8m'
+#   'NaN -A128m -n4m' 
+#   '-N2 -A128m -n4m' 
+#   '-N2 -A128m -H400M -n4m' 
+#   '-H200M' 
+#   '-A200M -H200M -n4m'
+#   '-A256M -n8m'
+#   '-qg'
 )
 
 repos=(
-    # 'https://github.com/rtfeldman/elm-spa-example.git'
+    'https://github.com/joefiorini/flittal.git'
     # 'https://github.com/sporto/elm-tutorial-app.git'
     # 'https://github.com/stefankreitmayer/elm-joust.git'
     # 'https://github.com/w0rm/elm-flatris.git'
     # 'https://github.com/FidelisClayton/elm-spotify-mapper.git'
     # 'https://github.com/brenopanzolini/pokelmon'
     # 'https://github.com/huytd/kanelm'
-    'https://github.com/robx/elm-unicode.git'
+    # 'https://github.com/robx/elm-unicode.git'
 )
 
 mkdir -p /repos && cd /repos
@@ -24,17 +34,18 @@ for r in "${repos[@]}"
 do
     git clone $r ./test
     cd test
+    git checkout getting-running
     /elmbin/dist_binaries/elm-package install -y > /dev/null 2>&1
         
     echo "Starting run for repo: $r"
     echo "Original elm-make"
-    time $ORIGINAL_ELM_MAKE_BINARY src/Unicode.elm
+    time $ORIGINAL_ELM_MAKE_BINARY +RTS -s -RTS src/Main.elm
 
     for i in "${arr[@]}"
     do
         rm -rf elm-stuff/build-artifacts
         echo "elm-make with options: $i"
-        time $ELM_MAKE_BINARY +RTS "$i" -RTS src/Unicode.elm
+        time $ELM_MAKE_BINARY +RTS "$i" -s -RTS src/Main.elm
     done
     
     cd ..
