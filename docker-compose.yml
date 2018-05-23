@@ -1,0 +1,7 @@
+version: '3'
+services:
+    elm:
+        build: .
+        volumes:
+            - ./benchmarks.sh:/benchmarks.sh
+            - ./bins:/bins
